@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from './actions/UserAction';
+import Header from './component/Header';
 
 function App() {
+  const users = useSelector((state) => state.users);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then((response) => response.json())
+      .then((data) => dispatch(setUser(data)));
+  }, [dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Header />
+      <h2>Users</h2>
+      <ol type='number'>
+        {users.map((user) => (
+          <li key={user.id}>
+            <h3>{user.name}</h3>
+            <p>Email: {user.email}</p>
+            <p>Phone: {user.phone}</p>
+            <hr />
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
